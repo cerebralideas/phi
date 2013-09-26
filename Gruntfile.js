@@ -15,28 +15,22 @@ module.exports = function(grunt) {
 			},
 			main: {}
 		},
-		markdown: {
-			all: {
-				files: 'docs/md/*',
-				dest: 'docs/html/',
-				template: 'templates/markdown/html-partial-template.html'
-			}
-		},
 		test: {},
 		watch: {
 			js: {
 				files: '<%= jshint.files %>',
-				tasks: ['jshint', 'macreload']
+				tasks: ['macreload']
 			},
 			scss: {
-				files: 'ui-ix/**/*.scss',
+				files: ['main.scss', 'framework/**/*.scss'],
 				tasks: ['compass:dev', 'macreload']
 			}
 		},
 		jshint: {
 			files: [
 				'Gruntfile.js',
-				'ui-ix/**/*.js'
+				'framework/**/*.js',
+				'main.js'
 			],
 			options: {
 				jshintrc: '.jshintrc' // Retrieves .jshintrc file from public/ See jshintrcExplained.js for more details
@@ -50,7 +44,7 @@ module.exports = function(grunt) {
 			build: {
 				expand: true,     // Enable dynamic expansion.
 				cwd: 'dev/',      // Src matches are relative to this path.
-				src: ['**/*.js'], // Actual pattern(s) to match.
+				src: ['main.js', 'framework/**/*.js'], // Actual pattern(s) to match.
 				dest: 'dist/',    // Destination path prefix.
 				ext: '.js',       // Dest filepaths will have this extension.
 				flatten: false    // Remove directory structure in destination
@@ -59,8 +53,8 @@ module.exports = function(grunt) {
 		compass: {
 			dev: {
 				options: {
-					sassDir: 'ui-ix/sass',
-					cssDir: '../demo-css/'
+					sassDir: '',
+					cssDir: 'demo-css/'
 				}
 			}
 		},
@@ -82,13 +76,10 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
-	// Load in Markdown task
-	grunt.loadNpmTasks('grunt-markdown');
-
 	// Load the "Live Reload" alternative
 	grunt.loadNpmTasks('grunt-macreload');
 
 	// Default dev tasks for grunt.
-	grunt.registerTask('default', ['jshint', 'compass:dev', 'macreload']);
+	grunt.registerTask('default', ['compass:dev', 'macreload']);
 
 };
