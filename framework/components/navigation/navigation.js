@@ -1,125 +1,106 @@
 $(function ($, undefined) {
 
-	/* GLOBAL DROP-DOWN FUNCTIONALITY: This creates the drop-down functionality
-	 * for hidden sub-menus.
-	 */
+        /* GLOBAL DROP-DOWN FUNCTIONALITY: This creates the drop-down functionality
+         * for hidden sub-menus.
+         */
 
-	/* This deactivates the fallback Suckerfish drop-down (if there is one),
-	 * creates the drop-down functionality for hidden sub-menus using jQuery.
-	 */
+        /* This deactivates the fallback Suckerfish drop-down (if there is one),
+         * creates the drop-down functionality for hidden sub-menus using jQuery.
+         */
 
-	'use strict';
+        var $nav = $('.dropDownMenu'),
+                $navItem = $nav.find('.navItem'),
+                downArrow = '<img src="/phi/framework/img/svg-icons/down-arrow.svg">',
+                upArrow = '<img src="/phi/framework/img/svg-icons/up-arrow.svg">',
+                arrow,
+                dropDown;
 
-	// TODO: Rethink how bindNav() is run.
+        $nav.removeClass('hasHover'); // Removes fallback CSS dropdown
 
-	(function checkNavLoaded () {
+        if ($navItem.find('ul') || $navItem.find('ol')) {
 
-		console.log('Running checkNavLoaded');
+                $navItem.find('ul').addClass('dropDown').
+                                parent().addClass('hasDropdown').
+                                children('a').after('<span class="dropDownTrigger">' +
+                                '<a class="disclosureArrow" tabindex="-1" title="Opens a drop-down Menu for sub-menu" ' +
+                                'href="#">' + downArrow + '</a></span>'
+                        );
 
-		if ( $('.dropDownMenu').length !== 0 ) {
+                $navItem.find('ol').addClass('dropDown').
+                                parent().addClass('hasDropdown').
+                                children('a').after('<span class="dropDownTrigger">' +
+                                '<a class="disclosureArrow" tabindex="-1" title="Opens a drop-down Menu for sub-menu" ' +
+                                'href="#">' + downArrow + '</a></span>'
+                        );
 
-			console.log('Loaded!');
+                dropDown =  $('.dropDown');
+                arrow = $navItem.find('.disclosureArrow');
 
-			bindNav();
+                $nav.on('click', '.dropDownTrigger', function (e) {
 
-		} else {
+                        var parentWidth = $(this).parent().innerWidth(),
+                                subMenu;
 
-			setTimeout(checkNavLoaded, 200);
-		}
-	}());
+                        if (dropDown.is(':visible')) {
 
-	function bindNav () {
+                                dropDown.slideUp(100);
+                                dropDown.parent().find(arrow).html(downArrow).removeClass('open');
+                        }
 
-		console.log($('.dropDownMenu'));
+                        subMenu = $(this).parent().find(dropDown);
 
-		var $nav = $('.dropDownMenu'),
-			$navItem = $nav.find('.navItem'),
-			downArrow = '<i>&#xe0ca;</i>', // creates HTML arrow
-			upArrow = '<i>&#xe0cb;</i>', // creates HTML arrow
-			arrow,
-			dropDown;
+                        if ( subMenu.is(':hidden')) {
 
-		$nav.removeClass('hasHover'); // Removes fallback CSS dropdown
+                                subMenu.slideDown(200);
+                                subMenu.parent().find(arrow).html(upArrow).addClass('open');
 
-		if ($navItem.find('ul') || $navItem.find('ol')) {
+                        } else {
 
-			$navItem.find('ul').addClass('dropDown').
-					parent().addClass('hasDropdown').
-					children('a').after('<span class="dropDownTrigger">' +
-					'<a class="disclosureArrow" tabindex="-1" title="Opens a drop-down Menu for sub-menu" ' +
-					'href="#">' + downArrow + '</a></span>'
-				);
+                                subMenu.slideUp(100);
+                                subMenu.parent().find(arrow).html(downArrow).removeClass('open');
 
-			$navItem.find('ol').addClass('dropDown').
-					parent().addClass('hasDropdown').
-					children('a').after('<span class="dropDownTrigger">' +
-					'<a class="disclosureArrow" tabindex="-1" title="Opens a drop-down Menu for sub-menu" ' +
-					'href="#">' + downArrow + '</a></span>'
-				);
+                        }
 
-			dropDown =  $('.dropDown');
-			arrow = $navItem.find('.disclosureArrow');
+                        // TODO: Would rather not have to do return: false, but
+                        // this unfortunately is needed to keep the click event
+                        // on the body below from pulling the menu back up.
+                        return false;
+                });
 
-			$nav.on('click', '.dropDownTrigger', function (e) {
+                /* This improves accessibility by triggering the drop-down if
+                 the user focuses on the main level element; only works if
+                 screen reader uses JS
+                 */
 
-				var parentWidth = $(this).parent().innerWidth(),
-					subMenu;
+                $nav.find('a').focus(function () {
 
-				if (dropDown.is(':visible')) {
+                        var subMenu = $(this).parent('li').find('.dropDown');
+                        subMenu.slideDown(400);
+                        subMenu.parent().find(arrow).html(upArrow).addClass('open');
 
-					dropDown.parent().find(arrow).html(downArrow).removeClass('open');
-				}
+                });
 
-				subMenu = $(this).parent().find(dropDown);
+                // If focused is lost on drop-down trigger slide up menu
+                // This should be written better
 
-				if ( subMenu.is(':hidden')) {
+                $nav.find('a').parent().delegate(".dropDown li:last-child a", "blur", function () {
 
-					subMenu.parent().find(arrow).html(upArrow).addClass('open');
+                        var subMenu = $(this).parent().parent(dropDown);
+                        subMenu.slideUp(100);
+                        subMenu.parent().find(arrow).html(downArrow).removeClass('open');
 
-				} else {
+                });
 
-					subMenu.parent().find(arrow).html(downArrow).removeClass('open');
+                // If user clicks on any element while drop-down is visible, slideUp menu
 
-				}
+                $('body').click(function () {
 
-				// TODO: Would rather not have to do return: false, but
-				// this unfortunately is needed to keep the click event
-				// on the body below from pulling the menu back up.
-				return false;
-			});
+                        if (dropDown.is(':visible')) {
 
-			/* This improves accessibility by triggering the drop-down if
-			 the user focuses on the main level element; only works if
-			 screen reader uses JS
-			 */
+                                dropDown.slideUp(100);
+                                dropDown.parent().find(arrow).html(downArrow).removeClass('open');
 
-			$nav.find('a').focus(function () {
-
-				var subMenu = $(this).parent('li').find('.dropDown');
-				subMenu.parent().find(arrow).html(upArrow).addClass('open');
-
-			});
-
-			// If focused is lost on drop-down trigger slide up menu
-			// This should be written better
-
-			$nav.find('a').parent().delegate(".dropDown li:last-child a", "blur", function () {
-
-				var subMenu = $(this).parent().parent(dropDown);
-				subMenu.parent().find(arrow).html(downArrow).removeClass('open');
-
-			});
-
-			// If user clicks on any element while drop-down is visible, slideUp menu
-
-			$('body').click(function () {
-
-				if (dropDown.is(':visible')) {
-
-					dropDown.parent().find(arrow).html(downArrow).removeClass('open');
-
-				}
-			});
-		}
-	}
+                        }
+                });
+        }
 }(jQuery));

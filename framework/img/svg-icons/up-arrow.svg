@@ -10,8 +10,7 @@
 	 width="22px" height="25px"
 	 viewBox="0 0 22 25" enable-background="new 0 0 22 25"
 	 xml:space="preserve">
-
-	<g>
-		<path fill="#555555" d="M14.051,12.76L11,18.02l-3.021-5.26L4.958,7.5H11h6.043L14.051,12.76z"/>
-	</g>
+<g>
+	<path fill="#555555" d="M7.9,12.8L11,7.5l3,5.3l3,5.3h-6H5L7.9,12.8z"/>
+</g>
 </svg>

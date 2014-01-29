@@ -20,12 +20,7 @@
 		ul,
 		ol {
 			margin: 0;
-			opacity: 0;
 			position: absolute;
-			top: 0;
-			transition: .1s;
-			white-space: nowrap;
-			visibility: hidden;
 
 			a {
 				display: block;
@@ -61,6 +56,10 @@
 			padding: ($baseLineHeight / 2) $baseLineHeight;
 		}
 	}
+	& li:first-child .dropDown {
+		right: auto;
+		left: 0;
+	}
 }
 .navItem {
 	position: relative;
@@ -75,20 +74,18 @@
 		display: inline-block;
 		padding-right: ($baseLineHeight / 4);
 	}
+	.dropDownTrigger {
+		margin-right: $baseLineHeight * 2;
+	}
 	& .disclosureArrow {
 		display: inline-block;
+		position: absolute;
 		text-decoration: none;
+		padding: 0.25em 0 0;
 		padding-left: ($baseLineHeight / 4);
-
-		&:hover i {
-			background: $mainColor;
-		}
-		&.open {
-			background: $mainColor;
-		}
 	}
 	& > ul {
-		//display: none;
+		display: none;
 	}
 	&.active {
 
@@ -116,6 +113,10 @@
 		display: block;
 		padding: ($baseLineHeight / 2) $baseLineHeight;
 	}
+}
+/* Style for open submenu */
+.dropDown.open {
+	display: block;
 }
 
 /* This is the fallback Superfish hover menu */
